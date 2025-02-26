@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Footer, Navbar } from "../components";
-import Calendar from "../components/Calender"; 
+import { Footer, Navbar } from "../../components";
+import Calendar from "../../components/Calender"; 
 import { NavLink,useNavigate } from "react-router-dom";
 
 const CalenderView = () => {

@@ -1,9 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 
 const Navbar = () => {
-    const state = useSelector(state => state.handleCart)
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
             <div className="container">
@@ -20,28 +18,18 @@ const Navbar = () => {
                             <NavLink className="nav-link" to="/home">Home </NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/product">Products</NavLink>
+                            <NavLink className="nav-link" to="/team">Teams</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/about">Teams</NavLink>
+                            <NavLink className="nav-link" to="/Project">Projects</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/contact">Contact</NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink className="nav-link" to="/calender">Form</NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink className="nav-link" to="/Project">Project</NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink className="nav-link" to="/Timesheets">Timesheets</NavLink>
+                            <NavLink className="nav-link" to="/calender">Timesheets</NavLink>
                         </li>
                     </ul>
                     <div className="buttons text-center">
-                    <NavLink to="/register" className="btn btn-outline-dark m-2"><i className="fa fa-user mr-1"></i> Profile</NavLink>
-                        <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Logout</NavLink>
-                        <NavLink to="/cart" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> Cart ({state.length}) </NavLink>
+                    <NavLink to="/team/add" className="btn btn-outline-dark m-2"><i className="fa fa-user mr-1"></i> Profile</NavLink>
+                        <NavLink to="/" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Logout</NavLink>
                     </div>
                 </div>
 

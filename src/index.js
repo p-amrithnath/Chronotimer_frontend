@@ -4,19 +4,15 @@ import "../node_modules/font-awesome/css/font-awesome.min.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Provider } from "react-redux";
-import store from "./redux/store";
+// import { Provider } from "react-redux";
+// import store from "./redux/store";
 
 import {
   Home,
-  Product,
-  Products,
-  AboutPage,
+  Team,
   ContactPage,
-  Cart,
   Login,
   Register,
-  Checkout,
   PageNotFound,
   Project,
   Timesheets,
@@ -31,17 +27,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <ScrollToTop>
-      <Provider store={store}>
+      {/* <Provider store={store}> */}
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/product" element={<Products />} />
-          <Route path="/product/:id" element={<Product />} />
-          <Route path="/about" element={<AboutPage />} />
+          <Route path="/team" element={<Team />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/cart" element={<Cart />} />
           <Route path="/home" element={<Home />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="/product/*" element={<PageNotFound />} />
           <Route path="/project" element={<Project />} />
@@ -50,7 +42,7 @@ root.render(
           <Route path="/team/add*" element={<TeamForm />} />
           <Route path="/calender" element={<CalenderView />} />
         </Routes>
-      </Provider>
+      {/* </Provider> */}
     </ScrollToTop>
     <Toaster />
   </BrowserRouter>

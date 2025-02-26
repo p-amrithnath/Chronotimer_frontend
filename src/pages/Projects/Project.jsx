@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Footer, Navbar } from "../components";
-import { useSelector } from "react-redux";
+import { Footer, Navbar } from "../../components";
 import { NavLink } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./index.css";
+import "./Project.css";
 
-const Checkout = () => {
-  const state = useSelector((state) => state.handleCart);
+const Project = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -36,7 +34,7 @@ const Checkout = () => {
     );
   };
 
-  const ShowCheckout = ({ state }) => {
+  const Project = () => {
     // Calculate the indices for the current page
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -49,7 +47,7 @@ const Checkout = () => {
       <>
         <div className="container py-1 content">
           <div className="text-end">
-            <NavLink to="/team/add" className="btn btn-outline-dark m-2">
+            <NavLink to="/Project/add" className="btn btn-outline-dark m-2">
               <i className="fa fa-user-plus mr-1"></i>Add
             </NavLink>
           </div>
@@ -98,6 +96,9 @@ const Checkout = () => {
               </tbody>
             </table>
           </div>
+
+         
+         
         </div>
       </>
     );
@@ -108,8 +109,8 @@ const Checkout = () => {
       <Navbar />
       <div className="full-height-container">
         <div className="container my-1 py-1 content">
-          <h3>Team</h3>
-          {state.length ? <ShowCheckout state={state} /> : <EmptyCart />}
+          <h3>Projects</h3>
+          <Project />
         </div>
         {/* <Footer /> */}
       </div>
@@ -117,4 +118,4 @@ const Checkout = () => {
   );
 };
 
-export default Checkout;
+export default Project;

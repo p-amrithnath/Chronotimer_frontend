@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Select from "react-select";
-import { useSelector } from "react-redux";
-import { Footer, Navbar } from "../components";
-import BackButton from "../components/BackButton";
+import { Footer, Navbar } from "../../components";
+import BackButton from "../../components/BackButton";
 
 const skillOptions = [
   { value: "Java", label: "Java" },
@@ -14,7 +13,6 @@ const skillOptions = [
 ];
 
 const TeamForm = () => {
-  const state = useSelector((state) => state.handleCart);
   const [view, setView] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

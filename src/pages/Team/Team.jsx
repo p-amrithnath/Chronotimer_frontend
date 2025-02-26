@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Footer, Navbar } from "../components";
-import { useSelector } from "react-redux";
+import { Footer, Navbar } from "../../components";
 import { NavLink } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Project.css";
+import "./Team.css";
 
-const Project = () => {
-  const state = useSelector((state) => state.handleCart);
+const Team = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -36,7 +34,7 @@ const Project = () => {
     );
   };
 
-  const Project = ({ state }) => {
+  const TeamTable = () => {
     // Calculate the indices for the current page
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -49,7 +47,7 @@ const Project = () => {
       <>
         <div className="container py-1 content">
           <div className="text-end">
-            <NavLink to="/Project/add" className="btn btn-outline-dark m-2">
+            <NavLink to="/team/add" className="btn btn-outline-dark m-2">
               <i className="fa fa-user-plus mr-1"></i>Add
             </NavLink>
           </div>
@@ -98,9 +96,6 @@ const Project = () => {
               </tbody>
             </table>
           </div>
-
-         
-         
         </div>
       </>
     );
@@ -111,8 +106,8 @@ const Project = () => {
       <Navbar />
       <div className="full-height-container">
         <div className="container my-1 py-1 content">
-          <h3>Projects</h3>
-          <Project state={state} />
+          <h3>Team</h3>
+          <TeamTable />
         </div>
         {/* <Footer /> */}
       </div>
@@ -120,4 +115,4 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default Team;

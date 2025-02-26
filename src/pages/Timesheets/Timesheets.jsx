@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Footer, Navbar } from "../components";
-import { useSelector } from "react-redux";
+import { Footer, Navbar } from "../../components";
 import { NavLink ,useLocation} from "react-router-dom";
 import { Button, Modal, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Project.css";
-import RemarksPopup from "../components/RemarksPopup";
-import TimeEntryPopup from "../components/EditTimeentryPopup";
-import BackButton from "../components/BackButton";
+import "./Timesheets.css";
+import RemarksPopup from "../../components/RemarksPopup";
+import TimeEntryPopup from "../../components/EditTimeentryPopup";
+import BackButton from "../../components/BackButton";
 
 const Timesheets = () => {
-  const state = useSelector((state) => state.handleCart);
   const [data, setData] = useState([]);
   const [show, setShow] = useState(false);
   const [showTimeEntry, setShowTimeEntry] = useState(false);
@@ -56,15 +54,8 @@ const Timesheets = () => {
     console.log("Time entry saved:", entry);
   };
 
-  const EmptyCart = () => {
-    return (
-      <div className="container table-container">
-        <p className="text-center">No data available</p>
-      </div>
-    );
-  };
 
-  const Timesheet = ({ state }) => {
+  const TimesheetTable = () => {
     return (
       <>
         <div className="container py-1 content">
@@ -127,7 +118,7 @@ const Timesheets = () => {
             </table>
           </div>
           <div className="text-end">
-            <NavLink to="/checkout" className="btn btn-outline-dark m-2">
+            <NavLink to="/calender" className="btn btn-outline-dark m-2">
               <i className="fa fa-paper-plane mr-1"></i>Submit
             </NavLink>
           </div>
@@ -143,7 +134,7 @@ const Timesheets = () => {
         <div className="container my-1 py-1 content">
         <BackButton />
           <h3>Timesheet</h3>
-          <Timesheet state={state} />
+          <TimesheetTable/>
         </div>
         {/* <Footer /> */}
       </div>
