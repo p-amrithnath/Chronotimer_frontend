@@ -1,0 +1,15 @@
+.table-container {
+    min-height: 300px; /* Adjust the height as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .table {
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+
+
+  

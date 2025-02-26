@@ -1,0 +1,15 @@
+.fc-daygrid-day.approved {
+    background-color: lightgreen;
+  }
+  
+  .fc-daygrid-day.rejected {
+    background-color: lightcoral;
+  }
+  
+  .fc-daygrid-day.pending {
+    background-color: lightpink;
+  }
+  
+  .fc-daygrid-day.pending-future {
+    background-color: lightyellow;
+  }

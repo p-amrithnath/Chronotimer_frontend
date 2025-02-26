@@ -1,0 +1,14 @@
+.overlay-background {
+    max-height: 100vh;
+    overflow: hidden;
+    background-color: rgba(52, 58, 64, 0.1); /* Semi-transparent background */
+    background-image: url("../../public/assets/main.png.jpg");
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .text-container {
+    color: black;
+    font-weight: bold;
+    position: relative; 
+  }
