@@ -2,23 +2,33 @@ import React, { useState, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction'; // Import the interaction plugin
+import TimesheetsService from '../services/TimesheetsService';
 
 const Calendar = ({ onDateClick, employeeId }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [localEmployeeId, setLocalEmployeeId] = useState(localStorage.getItem('employeeId') || '12345'); // Default employee ID from local storage
+  const [localEmployeeId, setLocalEmployeeId] = useState(employeeId || localStorage.getItem('userId')); // Default employee ID from local storage
+  const [events, setEvents] = useState([]);
+
+  
+  const fetchMonthlyHours = async (month, year, empId) => {
+    try {
+      const monthlyHours = await TimesheetsService.getmonthlyTimesheet(month, year, empId);
+      setEvents(monthlyHours);
+      console.log("Monthly Hours:", monthlyHours);
+    } catch (error) {
+      console.error('Error fetching Monthly Hours:', error);
+    }
+  };
 
   useEffect(() => {
-    setLocalEmployeeId(employeeId); // Update local employee ID when prop changes
-  }, [employeeId]);
+    const month = currentDate.getMonth() + 1; // getMonth() returns 0-11
+    const year = currentDate.getFullYear();
+    const empId = employeeId || localEmployeeId;
+    fetchMonthlyHours(month, year, empId);
+  }, [currentDate, employeeId, localEmployeeId]);
 
-  // Hardcoded data
-  const events = [
-    { date: '2025-02-27', hours: 8, status: 'APPROVED' },
-    { date: '2025-02-02', hours: 6, status: 'REJECTED' },
-    { date: '2025-02-03', hours: 7, status: 'PENDING' },
-    { date: '2025-02-04', hours: 5, status: 'PENDING_FUTURE' },
-    // Add more events as needed
-  ];
+  
+ 
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -28,7 +38,7 @@ const Calendar = ({ onDateClick, employeeId }) => {
         return 'lightcoral';
       case 'PENDING':
         return 'lightpink';
-      case 'PENDING_FUTURE':
+      case 'PARTIAL':
         return 'lightyellow';
       default:
         return '';
@@ -44,7 +54,7 @@ const Calendar = ({ onDateClick, employeeId }) => {
   const filteredEvents = events.filter(event => !isFutureDate(new Date(event.date)));
 
   const formattedEvents = filteredEvents.map(event => ({
-    title: `Hours: ${event.hours}`,
+    title: `Hours: ${event.approvedHrs}`,
     start: event.date,
     backgroundColor: getStatusColor(event.status),
     borderColor: getStatusColor(event.status)
@@ -56,7 +66,7 @@ const Calendar = ({ onDateClick, employeeId }) => {
 
   const renderEventContent = (eventInfo) => {
     return (
-      <div style={{ textAlign: 'center',color: 'black',fontWeight: 'bold' }}>
+      <div style={{ textAlign: 'center', color: 'black', fontWeight: 'bold' }}>
         {eventInfo.event.title}
       </div>
     );
@@ -81,9 +91,6 @@ const Calendar = ({ onDateClick, employeeId }) => {
           }
         }}
       />
-      <div>
-        <p>Current Employee ID: {localEmployeeId}</p>
-      </div>
       <style>
         {`
           .fc-disabled {

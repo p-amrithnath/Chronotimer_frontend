@@ -18,7 +18,7 @@ const Main = ({ employeeName }) => {
       <div className="card-img-overlay d-flex align-items-center justify-content-center overlay-background">
         <div className="card-img-overlay d-flex align-items-center justify-content-center">
           <div className="container text-center text-container">
-          <h5 className="card-title fs-1 text fw-bold" style={{ fontFamily: 'Georgia, serif', letterSpacing: '2px' }}>{getGreeting()}, {employeeName}</h5>
+          <h5 className="card-title fs-1 text fw-bold" style={{ fontFamily: 'Georgia, serif', letterSpacing: '2px' }}>{getGreeting()}, {employeeName || localStorage.getItem('name')}</h5>
             <p className="card-text fs-5 d-none d-sm-block" style={{fontStyle: 'italic', fontFamily: 'Times New Roman, serif',fontWeight: 'bold'}}>
               Let's track your work.
             </p>

@@ -14,7 +14,6 @@ const RemarksPopup = ({ show, setShow, remarksData }) => {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>#</th>
               <th>Remark</th>
               <th>Date</th>
             </tr>
@@ -22,9 +21,8 @@ const RemarksPopup = ({ show, setShow, remarksData }) => {
           <tbody>
             {remarksData.map((item) => (
               <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.remark}</td>
-                <td>{item.date}</td>
+                <td>{item.message}</td>
+                <td>{item.createdAt}</td>
               </tr>
             ))}
           </tbody>

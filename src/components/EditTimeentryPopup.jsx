@@ -1,19 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast, ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import ProjectService from "../services/ProjectService";
 
-const TimeEntryPopup = ({ show, setShow, onSave }) => {
-  const [projectName, setProjectName] = useState("");
+const TimeEntryPopup = ({ show, setShow, onSave, entry,timeEntryDate }) => {
+  const [projectId, setProjectId] = useState("");
   const [fromTime, setFromTime] = useState("");
   const [toTime, setToTime] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [status, setStatus] = useState("PENDING");
+  const [status, setStatus] = useState("COMPLETED");
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const projectsData = await ProjectService.getAllProjects();
+        setProjects(projectsData);
+      } catch (error) {
+        console.error("There was an error fetching the projects!", error);
+        toast.error("Failed to fetch projects.");
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  useEffect(() => {
+    if (entry) {
+      setProjectId(entry.projectId);
+      setFromTime(entry.startTime.split("T")[1].slice(0, 5));
+      setToTime(entry.endTime.split("T")[1].slice(0, 5));
+      setDescription(entry.taskDescription);
+      setCategory(entry.category);
+      setStatus(entry.status);
+    } else {
+      resetFields();
+    }
+  }, [entry]);
 
   const resetFields = () => {
-    setProjectName("");
+    setProjectId("");
     setFromTime("");
     setToTime("");
     setDescription("");
@@ -30,7 +59,14 @@ const TimeEntryPopup = ({ show, setShow, onSave }) => {
     e.preventDefault(); // Prevent form submission
 
     // Check if all fields are filled
-    if (!projectName || !fromTime || !toTime || !description || !category || !status) {
+    if (
+      !projectId ||
+      !fromTime ||
+      !toTime ||
+      !description ||
+      !category ||
+      !status
+    ) {
       toast.error("All fields are mandatory");
       return;
     }
@@ -42,19 +78,19 @@ const TimeEntryPopup = ({ show, setShow, onSave }) => {
     }
 
     const hours = calculateHours(fromTime, toTime);
-    const entry = {
-      employeeId: 0,
-      projectId: 0,
+    const entryData = {
+      ...entry,
+      projectId,
       category,
       taskDescription: description,
-      date: new Date().toISOString().split("T")[0],
+      date: timeEntryDate,
       startTime: `2025-01-27T${fromTime}:00`,
       endTime: `2025-01-27T${toTime}:00`,
       status,
       submit: false,
       hours,
     };
-    onSave(entry);
+    onSave(entryData);
     resetFields();
     setShow(false);
   };
@@ -77,10 +113,17 @@ const TimeEntryPopup = ({ show, setShow, onSave }) => {
             <Form.Group controlId="formProjectName">
               <Form.Label>Project Name</Form.Label>
               <Form.Control
-                type="text"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-              />
+                as="select"
+                value={projectId}
+                onChange={(e) => setProjectId(e.target.value)}
+              >
+                <option value="">Choose...</option>
+                {projects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.projName}
+                  </option>
+                ))}
+              </Form.Control>
             </Form.Group>
             <Form.Group controlId="formCategory">
               <Form.Label>Category</Form.Label>
@@ -102,7 +145,7 @@ const TimeEntryPopup = ({ show, setShow, onSave }) => {
             <Form.Group controlId="formFromTime">
               <Form.Label>From</Form.Label>
               <Form.Control
-                type="time"
+               type="time"
                 value={fromTime}
                 onChange={(e) => setFromTime(e.target.value)}
               />
@@ -143,7 +186,7 @@ const TimeEntryPopup = ({ show, setShow, onSave }) => {
           </Button>
           <Button variant="primary" onClick={handleSave}>
             Save
-            </Button>
+          </Button>
         </Modal.Footer>
       </Modal>
       <ToastContainer />

@@ -18,7 +18,8 @@ import {
   Timesheets,
   ProjectForm,
   TeamForm,
-  CalenderView
+  CalenderView,
+  Profile   
 } from "./pages";
 import ScrollToTop from "./components/ScrollToTop";
 import { Toaster } from "react-hot-toast";
@@ -38,9 +39,10 @@ root.render(
           <Route path="/product/*" element={<PageNotFound />} />
           <Route path="/project" element={<Project />} />
           <Route path="/timesheets" element={<Timesheets />} />
-          <Route path="/project/add*" element={<ProjectForm />} />
-          <Route path="/team/add*" element={<TeamForm />} />
+          <Route path="/project/*" element={<ProjectForm />} />
+          <Route path="/team/*" element={<TeamForm />} />
           <Route path="/calender" element={<CalenderView />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       {/* </Provider> */}
     </ScrollToTop>

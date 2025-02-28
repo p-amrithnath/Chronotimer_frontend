@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Footer, Navbar } from "../../components";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Project.css";
+import projectService from "../../services/ProjectService"; // Corrected import
 
-const Project = () => {
+const ProjectPage = () => {
   const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const navigate = useNavigate();
+
+  const handleEdit = (project) => {
+    navigate('/project/edit', { state: { project } });
+  };
 
   useEffect(() => {
-    // Fetch data or set initial data here
-    setData([
-      { empid: 1, empname: "John Doe", salary: 50000, dept: "IT" },
-      { empid: 2, empname: "Jane Smith", salary: 60000, dept: "HR" },
-      { empid: 1, empname: "John Doe", salary: 50000, dept: "IT" },
-      { empid: 2, empname: "Jane Smith", salary: 60000, dept: "HR" },
-      { empid: 1, empname: "John Doe", salary: 50000, dept: "IT" },
-      { empid: 2, empname: "Jane Smith", salary: 60000, dept: "HR" },
-      // Add more data as needed
-    ]);
+    const fetchData = async () => {
+      try {
+        const projects = await projectService.getAllProjects();
+        setData(projects);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+    fetchData();
   }, []);
 
-  const deleteEmp = (empid) => {
-    setData(data.filter((emp) => emp.empid !== empid));
+  const deleteProject = async (projectId) => {
+    try {
+      await projectService.deleteProject(projectId);
+      setData(data.filter((project) => project.id !== projectId));
+    } catch (error) {
+      console.error(`Error deleting project with ID ${projectId}:`, error);
+    }
   };
 
   const EmptyCart = () => {
@@ -34,73 +42,64 @@ const Project = () => {
     );
   };
 
-  const Project = () => {
-    // Calculate the indices for the current page
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
-    // Calculate total pages
-    const totalPages = Math.ceil(data.length / itemsPerPage);
-
+  const ProjectList = () => {
     return (
-      <>
-        <div className="container py-1 content">
-          <div className="text-end">
-            <NavLink to="/Project/add" className="btn btn-outline-dark m-2">
+      <div className="container py-1 content">
+        <div className="text-end">
+            <button
+              className="btn btn-outline-dark m-2"
+              onClick={() => navigate("/Project/add")}
+            >
               <i className="fa fa-user-plus mr-1"></i>Add
-            </NavLink>
+            </button>
           </div>
 
-          <div className="row my-2 table-container">
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>EmpId</th>
-                  <th>EmpName</th>
-                  <th>EmpSalary</th>
-                  <th>Dept</th>
-                  <th  className="center-align">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.length > 0 ? (
-                  currentItems.map((emp) => (
-                    <tr key={emp.empid}>
-                      <td>{emp.empid}</td>
-                      <td>{emp.empname}</td>
-                      <td>{emp.salary}</td>
-                      <td>{emp.dept}</td>
-                      <td ml={1} className="center-align ">
-                        <i
-                          className="fas fa-trash-alt text-danger me-4"
-                          onClick={() => deleteEmp(emp.empid)}
-                          style={{ cursor: "pointer" }}
-                        ></i>
-                        <i
-                          className="fas fa-edit text-warning"
-                          style={{ cursor: "pointer" }}
-                        ></i>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6} className="text-center">
-                      No data available
+        <div className="row my-2 table-container">
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Project Id</th>
+                <th>Project Name</th>
+                <th>Type</th>
+                <th>Start Date</th>
+                <th>Estimated Hours</th>
+                <th className="center-align">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.length > 0 ? (
+                data.map((project) => (
+                  <tr key={project.id}>
+                    <td>{project.id}</td>
+                    <td>{project.projName}</td>
+                    <td>{project.type}</td>
+                    <td>{project.startDate}</td>
+                    <td>{project.estimatedhrs}</td>
+                    <td className="center-align">
+                      <i
+                        className="fas fa-trash-alt text-danger me-4"
+                        onClick={() => deleteProject(project.id)}
+                        style={{ cursor: "pointer" }}
+                      ></i>
+                      <i
+                        className="fas fa-edit text-warning"
+                        onClick={() => handleEdit(project)}
+                        style={{ cursor: "pointer" }}
+                      ></i>
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-         
-         
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="text-center">
+                    No data available
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      </>
+      </div>
     );
   };
 
@@ -110,12 +109,11 @@ const Project = () => {
       <div className="full-height-container">
         <div className="container my-1 py-1 content">
           <h3>Projects</h3>
-          <Project />
+          <ProjectList />
         </div>
-        {/* <Footer /> */}
       </div>
     </>
   );
 };
 
-export default Project;
+export default ProjectPage;

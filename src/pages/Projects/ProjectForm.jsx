@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 import { Footer, Navbar } from "../../components";
 import BackButton from "../../components/BackButton";
-import { toast, ToastContainer } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { toast} from "react-hot-toast";
+import { useNavigate,useLocation } from "react-router-dom";
 import "./ProjectForm.css";
+import projectService from "../../services/ProjectService";
 
 const ProjectForm = () => {
-  const [projName, setProjName] = useState("");
-  const [type, setType] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [closeDate, setCloseDate] = useState("");
-  const [tam, setTam] = useState("");
-  const [estimatedhrs, setEstimatedhrs] = useState("");
-  const [description, setDescription] = useState("");
+  const location = useLocation();
+  const project = location.state?.project;
+  const [projName, setProjName] = useState(project?.projName || "");
+  const [type, setType] = useState(project?.type || "");
+  const [startDate, setStartDate] = useState(project?.startDate || "");
+  const [closeDate, setCloseDate] = useState(project?.closeDate || "");
+  const [tam, setTam] = useState(project?.tam || "");
+  const [estimatedhrs, setEstimatedhrs] = useState(project?.estimatedhrs || "");
+  const [description, setDescription] = useState(project?.description || "");
+  const [id, setId] = useState(project?.id || null);
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       !projName ||
@@ -26,7 +31,7 @@ const ProjectForm = () => {
       !estimatedhrs ||
       !description
     ) {
-      toast.error("All fields are mandatory");
+      toast.error("All fields are mandatory!");
       return;
     }
 
@@ -39,11 +44,30 @@ const ProjectForm = () => {
       estimatedhrs,
       description,
     };
-    console.log(formData);
-    toast.success("Added Successfully");
-    navigate("/Project");
-  };
 
+    if (id) {
+      formData.id = id; // Include the id for editing
+    }
+
+    try {
+      let response;
+      if (id) {
+        response = await projectService.updateProject(formData); // Call update API if id is present
+        console.log("Project updated successfully:", response.data);
+        toast.success("Updated successfully!");
+      } else {
+        response = await projectService.saveProject(formData); // Call save API if id is not present
+        console.log("Project added successfully:", response.data);
+        toast.success("Added successfully!");
+      }
+      setTimeout(() => {
+        navigate("/Project");
+      }, 2000); // Adjust the timeout as needed
+    } catch (error) {
+      console.error("There was an error saving the project!", error);
+      toast.error("Failed to save project!");
+    }
+  };
   return (
     <>
       <Navbar />
@@ -102,6 +126,7 @@ const ProjectForm = () => {
                         <option value="TNM">TNM</option>
                         <option value="Fixed">Fixed</option>
                         <option value="Dedicated">Dedicated</option>
+                        <option value="Development">Development</option>
                       </select>
                       <div className="invalid-feedback">
                         Please select a valid type.
@@ -220,7 +245,6 @@ const ProjectForm = () => {
         </div>
       </div>
       <Footer />
-      <ToastContainer />
     </>
   );
 };
