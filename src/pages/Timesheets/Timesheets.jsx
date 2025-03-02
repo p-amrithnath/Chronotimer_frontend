@@ -9,9 +9,9 @@ import RemarksPopup from "../../components/RemarksPopup";
 import TimeEntryPopup from "../../components/EditTimeentryPopup";
 import BackButton from "../../components/BackButton";
 import TimeentryService from "../../services/TimeentryService";
+import { format } from "date-fns";
 
 const Timesheets = () => {
-  // Initialize state with default structures
   const [data, setData] = useState({
     timeentries: [],
     remarks: [],
@@ -28,6 +28,8 @@ const Timesheets = () => {
   const queryParams = new URLSearchParams(location.search);
   const employeeId = queryParams.get("employeeid");
   const date = queryParams.get("date");
+  const currentUserRole = localStorage.getItem("role");
+  const currentUserId = localStorage.getItem("userId");
 
   useEffect(() => {
     if (employeeId && date) {
@@ -56,6 +58,13 @@ const Timesheets = () => {
     }
   };
 
+  function extractTime(dateTimeStr) {
+    const dateTime = new Date(dateTimeStr);
+    const hours = dateTime.getHours().toString().padStart(2, "0");
+    const minutes = dateTime.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  }
+
   const deleteEmp = async (id) => {
     try {
       await TimeentryService.deleteTimeEntry(id);
@@ -66,6 +75,7 @@ const Timesheets = () => {
       setRefresh(!refresh);
     } catch (error) {
       console.error("Error deleting time entry:", error);
+      toast.error("Error deleting time entry!");
     }
   };
 
@@ -73,10 +83,10 @@ const Timesheets = () => {
     try {
       await TimeentryService.submitTimeentries(employeeId, date);
       setRefresh(!refresh);
-      alert("Time entries submitted successfully!");
+      toast.success("Time entries submitted successfully!");
     } catch (error) {
       console.error("Error submitting time entries:", error);
-      alert("Failed to submit time entries.");
+      toast.error("Failed to submit time entries.");
     }
   };
 
@@ -100,12 +110,13 @@ const Timesheets = () => {
         };
         console.log("Request for approve/reject:", request);
         await TimeentryService.approveReject(request);
-        alert(`Time entries ${status} successfully!`);
+        setSelectedEntries([]);
+        toast.success(`Time entries ${status} successfully!`);
         // Refresh data after action
         setRefresh(!refresh);
       } catch (error) {
         console.error(`Error ${status} time entries:`, error);
-        alert(`Failed to ${status} time entries.`);
+        toast.error(`Failed to ${status} time entries.`);
       }
     }
   };
@@ -122,6 +133,7 @@ const Timesheets = () => {
   const handleShow = () => setShow(true);
 
   const handleShowTimeEntry = (entry = null) => {
+    console.log("Time entryyy1 :", entry);
     setCurrentEntry(entry);
     setShowTimeEntry(true);
   };
@@ -152,37 +164,45 @@ const Timesheets = () => {
 
         console.log("New entry:", entry);
         const newEntry = await TimeentryService.createTimesheet(entry);
-        setData((prevData) => ({
-          ...prevData,
-          timeentries: [...prevData.timeentries, newEntry],
-        }));
+        // setData((prevData) => ({
+        //   ...prevData,
+        //   timeentries: [...prevData.timeentries, newEntry],
+        // }));
       }
       setRefresh(!refresh); // Toggle the refresh state to re-trigger useEffect
       handleCloseTimeEntry();
     } catch (error) {
       console.error("Error saving time entry:", error);
+      toast.error(error.response.data);
     }
   };
 
   const TimesheetTable = () => {
+
+    const filteredTimeEntries = (currentUserRole === "ADMIN" && !(currentUserId === employeeId)) 
+    ? data.timeentries.filter((entry) => entry.submit)
+    : data.timeentries;
+
     return (
       <>
         <div className="container py-1 content">
           <div className="d-flex justify-content-between align-items-center">
             <div>
-              Employee Name: <strong>{employeeId}</strong>
+              Employee ID: <strong>{employeeId}</strong>
               <span className="m-5">
-                Date: <strong>{date}</strong>
+                Date: <strong>{format(date, "dd-MM-yyyy")}</strong>
               </span>
             </div>
             <div>
-              <Button
-                variant="outline-dark"
-                className="m-2"
-                onClick={() => handleShowTimeEntry()}
-              >
-                <i className="fa fa-user-plus mr-1"></i>Add
-              </Button>
+              {currentUserId === employeeId && (
+                <Button
+                  variant="outline-dark"
+                  className="m-2"
+                  onClick={() => handleShowTimeEntry()}
+                >
+                  <i className="fa fa-user-plus mr-1"></i>Add
+                </Button>
+              )}
               {remarksData.length > 0 && (
                 <Button
                   variant="outline-dark"
@@ -199,7 +219,9 @@ const Timesheets = () => {
             <table className="table table-striped">
               <thead>
                 <tr>
+                 {currentUserRole === "ADMIN" && data.timesheets.submit && !(data.timesheets.status === "APPROVED") && (
                   <th>Select</th>
+                )}
                   <th>Project Id</th>
                   <th>Category</th>
                   <th>Start Time</th>
@@ -207,34 +229,45 @@ const Timesheets = () => {
                   <th>Hours</th>
                   <th>Task Description</th>
                   <th>Status</th>
+                  {currentUserId === employeeId && (
                   <th className="center-align">Action</th>
+                )}
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(data.timeentries) &&
-                data.timeentries.length > 0 ? (
-                  data.timeentries.map((timeentry) => {
+                {Array.isArray(filteredTimeEntries) &&
+                filteredTimeEntries.length > 0 ? (
+                  filteredTimeEntries.map((timeentry) => {
                     if (!timeentry) return null; // Skip if undefined
                     return (
                       <tr key={timeentry.id}>
+                        {currentUserRole === "ADMIN" && data.timesheets.submit  && !(data.timesheets.status === "APPROVED") && (
                         <td>
+                          {!(timeentry.status === "APPROVED") && (
                           <input
                             type="checkbox"
                             checked={selectedEntries.includes(timeentry.id)}
                             onChange={() => handleCheckboxChange(timeentry.id)}
                           />
+                          )}
                         </td>
+                         )}
                         <td>{timeentry.projectId}</td>
                         <td>{timeentry.category}</td>
-                        <td>{timeentry.startTime}</td>
-                        <td>{timeentry.endTime}</td>
+                        <td>{extractTime(timeentry.startTime)}</td>
+                        <td>{extractTime(timeentry.endTime)}</td>
                         <td>{timeentry.hours}</td>
                         <td>{timeentry.taskDescription}</td>
                         <td>
-                          {timeentry.submit ? "Submitted" : "Pending"}
+                          {timeentry.submit
+                            ? timeentry.status
+                            : "Not Submitted"}
                         </td>
+                      {currentUserId === employeeId  && (
                         <td ml={1} className="center-align">
-                          {timeentry.submit ? null : (
+                          {timeentry.submit ? (
+                            "Submitted"
+                          ) : (
                             <>
                               <i
                                 className="fas fa-trash-alt text-danger me-4"
@@ -249,6 +282,7 @@ const Timesheets = () => {
                             </>
                           )}
                         </td>
+                        )}
                       </tr>
                     );
                   })
@@ -263,27 +297,31 @@ const Timesheets = () => {
             </table>
           </div>
           <div className="text-end">
-            <Button
-              onClick={() => handleApproveReject("approved")}
-              variant="outline-dark"
-              className="m-2"
-            >
-              <i className="fa fa-check mr-1"></i>Approve
-            </Button>
-            <Button
-              onClick={() => handleApproveReject("rejected")}
-              variant="outline-dark"
-              className="m-2"
-            >
-              <i className="fa fa-times mr-1"></i>Reject
-            </Button>
-            <Button
-              onClick={submitTimeEntries}
-              variant="outline-dark"
-              className="m-2"
-            >
-              <i className="fa fa-paper-plane mr-1"></i>Submit
-            </Button>
+            {data.timesheets.submit && currentUserRole === "ADMIN" && !(data.timesheets.status === "APPROVED")  && (
+              <><Button
+                onClick={() => handleApproveReject("approved")}
+                variant="outline-dark"
+                className="m-2"
+              >
+                <i className="fa fa-check mr-1"></i>Approve
+              </Button><Button
+                onClick={() => handleApproveReject("rejected")}
+                variant="outline-dark"
+                className="m-2"
+              >
+                  <i className="fa fa-times mr-1"></i>Reject
+                </Button></>
+            )}
+            
+            {!data.timesheets.submit && currentUserId === employeeId && (
+              <Button
+                onClick={submitTimeEntries}
+                variant="outline-dark"
+                className="m-2"
+              >
+                <i className="fa fa-paper-plane mr-1"></i>Submit
+              </Button>
+            )}
           </div>
         </div>
       </>
@@ -301,11 +339,7 @@ const Timesheets = () => {
         </div>
       </div>
 
-      <RemarksPopup
-        show={show}
-        setShow={setShow}
-        remarksData={remarksData}
-      />
+      <RemarksPopup show={show} setShow={setShow} remarksData={remarksData} />
 
       <TimeEntryPopup
         show={showTimeEntry}
@@ -319,5 +353,3 @@ const Timesheets = () => {
 };
 
 export default Timesheets;
-
-

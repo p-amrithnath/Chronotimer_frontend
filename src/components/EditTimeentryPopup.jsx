@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-hot-toast";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import ProjectService from "../services/ProjectService";
 
 const TimeEntryPopup = ({ show, setShow, onSave, entry,timeEntryDate }) => {
+
   const [projectId, setProjectId] = useState("");
   const [fromTime, setFromTime] = useState("");
   const [toTime, setToTime] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [status, setStatus] = useState("COMPLETED");
+  const [status, setStatus] = useState("PENDING");
   const [projects, setProjects] = useState([]);
+
+  function getFormattedDateWithTime(time) {
+    console.log("Time:", time);
+    const [hours, minutes] = time.split(':').map(Number);
+    const specificDate = new Date();
+    specificDate.setUTCHours(hours, minutes, 0); // Set the specified time in UTC with seconds as 00
+    const formattedSpecificDate = specificDate.toISOString().slice(0, 19);
+    console.log("Formatted hours:", formattedSpecificDate);
+    return formattedSpecificDate;
+  }
+
+
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -28,18 +41,7 @@ const TimeEntryPopup = ({ show, setShow, onSave, entry,timeEntryDate }) => {
     fetchProjects();
   }, []);
 
-  useEffect(() => {
-    if (entry) {
-      setProjectId(entry.projectId);
-      setFromTime(entry.startTime.split("T")[1].slice(0, 5));
-      setToTime(entry.endTime.split("T")[1].slice(0, 5));
-      setDescription(entry.taskDescription);
-      setCategory(entry.category);
-      setStatus(entry.status);
-    } else {
-      resetFields();
-    }
-  }, [entry]);
+ 
 
   const resetFields = () => {
     setProjectId("");
@@ -49,6 +51,21 @@ const TimeEntryPopup = ({ show, setShow, onSave, entry,timeEntryDate }) => {
     setCategory("");
     setStatus("PENDING");
   };
+
+    useEffect(() => {
+      if (show) {
+      if (entry) {
+        setProjectId(entry.projectId);
+        setFromTime(entry.startTime.split("T")[1].slice(0, 5));
+        setToTime(entry.endTime.split("T")[1].slice(0, 5));
+        setDescription(entry.taskDescription);
+        setCategory(entry.category);
+        setStatus(entry.status);
+      } else {
+        resetFields();
+      }
+      }
+    }, [show ,entry]);
 
   const handleClose = () => {
     resetFields();
@@ -84,8 +101,8 @@ const TimeEntryPopup = ({ show, setShow, onSave, entry,timeEntryDate }) => {
       category,
       taskDescription: description,
       date: timeEntryDate,
-      startTime: `2025-01-27T${fromTime}:00`,
-      endTime: `2025-01-27T${toTime}:00`,
+      startTime: getFormattedDateWithTime(fromTime),
+      endTime: getFormattedDateWithTime(toTime),
       status,
       submit: false,
       hours,
@@ -96,8 +113,8 @@ const TimeEntryPopup = ({ show, setShow, onSave, entry,timeEntryDate }) => {
   };
 
   const calculateHours = (from, to) => {
-    const fromDate = new Date(`1970-01-01T${from}:00`);
-    const toDate = new Date(`1970-01-01T${to}:00`);
+    const fromDate = new Date(getFormattedDateWithTime(fromTime));
+    const toDate = new Date(getFormattedDateWithTime(toTime));
     const diff = (toDate - fromDate) / (1000 * 60 * 60);
     return diff > 0 ? diff.toFixed(2) : 0;
   };
@@ -167,17 +184,6 @@ const TimeEntryPopup = ({ show, setShow, onSave, entry,timeEntryDate }) => {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Form.Group>
-            <Form.Group controlId="formStatus">
-              <Form.Label>Status</Form.Label>
-              <Form.Control
-                as="select"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-              >
-                <option>COMPLETED</option>
-                <option>PENDING</option>
-              </Form.Control>
-            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -189,7 +195,6 @@ const TimeEntryPopup = ({ show, setShow, onSave, entry,timeEntryDate }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <ToastContainer />
     </>
   );
 };

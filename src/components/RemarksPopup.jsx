@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Modal, Table } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import moment from 'moment';
 
 const RemarksPopup = ({ show, setShow, remarksData }) => {
   const handleClose = () => setShow(false);
@@ -22,7 +23,8 @@ const RemarksPopup = ({ show, setShow, remarksData }) => {
             {remarksData.map((item) => (
               <tr key={item.id}>
                 <td>{item.message}</td>
-                <td>{item.createdAt}</td>
+                <td>{moment(item.createdAt).format('Do MMMM YYYY, HH:mm')}
+                </td>
               </tr>
             ))}
           </tbody>

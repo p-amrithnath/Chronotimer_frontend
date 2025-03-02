@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Footer, Navbar } from "../../components";
 import BackButton from "../../components/BackButton";
-import { toast} from "react-hot-toast";
-import { useNavigate,useLocation } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./ProjectForm.css";
 import projectService from "../../services/ProjectService";
+import SecurityService from "../../services/SecurityService";
 
 const ProjectForm = () => {
   const location = useLocation();
@@ -17,8 +18,22 @@ const ProjectForm = () => {
   const [estimatedhrs, setEstimatedhrs] = useState(project?.estimatedhrs || "");
   const [description, setDescription] = useState(project?.description || "");
   const [id, setId] = useState(project?.id || null);
+  const [data, setData] = useState([]);
 
   const navigate = useNavigate();
+
+  const fetchEmployees = async () => {
+    try {
+      const employees = await SecurityService.getAllEmployees();
+      setData(employees);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -180,14 +195,15 @@ const ProjectForm = () => {
                       <br />
                       <select
                         className="form-select"
-                        id="tam"
-                        required
                         value={tam}
                         onChange={(e) => setTam(e.target.value)}
                       >
-                        <option value="">Choose...</option>
-                        <option value="John Doe">John Doe</option>
-                        <option value="Jane Smith">Jane Smith</option>
+                        <option value="">Select</option>
+                        {data.map((employee) => (
+                          <option key={employee.id} value={employee.name}>
+                            {employee.name}
+                          </option>
+                        ))}
                       </select>
                       <div className="invalid-feedback">
                         Please select a valid TAM.

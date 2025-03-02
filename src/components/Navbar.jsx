@@ -6,6 +6,8 @@ const Navbar = () => {
     localStorage.clear();
   };
 
+  const currentUserRole = localStorage.getItem("role");
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
       <div className="container">
@@ -31,16 +33,17 @@ const Navbar = () => {
                 Home{" "}
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/team">
-                Teams
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/Project">
-                Projects
-              </NavLink>
-            </li>
+            {currentUserRole === "ADMIN" &&(
+            <><li className="nav-item">
+                <NavLink className="nav-link" to="/team">
+                  Teams
+                </NavLink>
+              </li><li className="nav-item">
+                  <NavLink className="nav-link" to="/Project">
+                    Projects
+                  </NavLink>
+                </li></>
+             )}
             <li className="nav-item">
               <NavLink className="nav-link" to="/calender">
                 Timesheets
@@ -51,9 +54,12 @@ const Navbar = () => {
             <NavLink to="/profile" className="btn btn-outline-dark m-2">
               <i className="fa fa-user mr-1"></i> Profile
             </NavLink>
-            <NavLink to="/" className="btn btn-outline-dark m-2">
-              <i className="fa fa-sign-in-alt mr-1" onClick={handleLogout}></i>{" "}
-              Logout
+            <NavLink
+              to="/"
+              className="btn btn-outline-dark m-2"
+              onClick={handleLogout}
+            >
+              <i className="fa fa-sign-in-alt mr-1"></i> Logout
             </NavLink>
           </div>
         </div>

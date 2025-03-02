@@ -15,7 +15,6 @@ const Login = () => {
       localStorage.setItem('jwtToken', response.token);
       localStorage.setItem('userId', response.userId);
       const employee = await LoginService.getEmployeeById(response.userId);
-      console.log('Employee :',employee);
       localStorage.setItem('name',employee.name);
       localStorage.setItem('role',employee.roles);
       navigate('/home', { state: { employee } });

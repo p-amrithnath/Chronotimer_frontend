@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Project.css";
 import projectService from "../../services/ProjectService"; // Corrected import
+import { format, formatDate } from 'date-fns';
 
 const ProjectPage = () => {
   const [data, setData] = useState([]);
@@ -73,7 +74,7 @@ const ProjectPage = () => {
                     <td>{project.id}</td>
                     <td>{project.projName}</td>
                     <td>{project.type}</td>
-                    <td>{project.startDate}</td>
+                    <td>{format(project.startDate, 'dd-MM-yyyy')}</td>
                     <td>{project.estimatedhrs}</td>
                     <td className="center-align">
                       <i

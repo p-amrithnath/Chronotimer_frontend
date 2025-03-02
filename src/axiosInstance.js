@@ -2,6 +2,7 @@ import axios from "axios";
 const axiosInstance = axios.create({
     baseURL: "http://localhost:1238", // Set base API URL
     });
+
      
     // Request Interceptor (Attach Token)
     axiosInstance.interceptors.request.use(
@@ -22,12 +23,14 @@ const axiosInstance = axios.create({
       (response) => response, // If successful, return response
       (error) => {
         if (error.response) {
-          if (error.response.status === 401) {
+          if (error.response.status === 403) {
             alert("Session expired! Redirecting to login...");
-            window.location.href = "/login";
-          } else if (error.response.status === 500) {
-            alert("Server error! Please try again later.");
-          }
+            window.location.href = "/";
+          } 
+          
+          // else if (error.response.status === 500) {
+          //   alert("Server error! Please try again later.");
+          // }
         }
         return Promise.reject(error);
       }
