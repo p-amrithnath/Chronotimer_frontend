@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "../../axiosInstance";
 import "./TeamForm.css";
+import SecurityService from "../../services/SecurityService";
 
 const skillOptions = [
   { value: "Java", label: "Java" },
@@ -90,17 +91,11 @@ const TeamForm = () => {
       let response;
       if (isEditMode) {
         // Update existing employee
-        response = await axiosInstance.patch(
-          `http://localhost:1238/auth/${emp.id}`,
-          formData
-        );
+        response = await SecurityService.updateEmployee(emp.id, formData);
         toast.success("Updated successfully!");
       } else {
         // Add new employee
-        response = await axiosInstance.post(
-          "http://localhost:1238/auth/new",
-          formData
-        );
+        response = await SecurityService.addEmployee(formData);
         if(response.data === 'Already Existing User is updated.')
         {
           toast.error("The user already exists!!!");

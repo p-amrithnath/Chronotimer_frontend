@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Team.css";
 import axios from "axios";
+import SecurityService from "../../services/SecurityService";
 
 const Team = () => {
   const [data, setData] = useState([]);
@@ -12,8 +13,9 @@ const Team = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:1238/auth");
-        setData(response.data);
+        const response = await SecurityService.getAllEmployees();
+        console.log(response);
+        setData(response);
       } catch (error) {
         console.error("There was an error fetching the data!", error);
       }
@@ -26,7 +28,7 @@ const Team = () => {
     try {
       const confirm = window.confirm("Are you sure you want to delete ?");
       if (confirm) {
-        await axios.delete(`http://localhost:1238/auth/${id}`);
+        await SecurityService.deleteEmployee(id);
         setData(data.filter((emp) => emp.id !== id));
       }
     } catch (error) {
