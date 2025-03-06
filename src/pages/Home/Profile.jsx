@@ -17,7 +17,6 @@ const skillOptions = [
 
 const TeamForm = () => {
   const [emp, setEmp] = useState(null);
-  const [view, setView] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -235,7 +234,6 @@ const TeamForm = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

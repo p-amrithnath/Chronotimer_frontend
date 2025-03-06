@@ -75,9 +75,7 @@ const ProjectForm = () => {
         console.log("Project added successfully:", response.data);
         toast.success("Added successfully!");
       }
-      setTimeout(() => {
-        navigate("/Project");
-      }, 2000); // Adjust the timeout as needed
+      navigate("/Project");
     } catch (error) {
       console.error("There was an error saving the project!", error);
       toast.error("Failed to save project!");
@@ -118,9 +116,6 @@ const ProjectForm = () => {
                         value={projName}
                         onChange={(e) => setProjName(e.target.value)}
                       />
-                      <div className="invalid-feedback">
-                        Valid project name is required.
-                      </div>
                     </div>
                     <div className="col-md-6 my-1">
                       <label
@@ -143,9 +138,6 @@ const ProjectForm = () => {
                         <option value="Dedicated">Dedicated</option>
                         <option value="Development">Development</option>
                       </select>
-                      <div className="invalid-feedback">
-                        Please select a valid type.
-                      </div>
                     </div>
                     <div className="col-md-6 my-1">
                       <label
@@ -163,9 +155,6 @@ const ProjectForm = () => {
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                       />
-                      <div className="invalid-feedback">
-                        Start date required.
-                      </div>
                     </div>
                     <div className="col-md-6 my-1">
                       <label
@@ -183,7 +172,6 @@ const ProjectForm = () => {
                         value={closeDate}
                         onChange={(e) => setCloseDate(e.target.value)}
                       />
-                      <div className="invalid-feedback">End date required.</div>
                     </div>
                     <div className="col-md-6 my-1">
                       <label
@@ -205,9 +193,6 @@ const ProjectForm = () => {
                           </option>
                         ))}
                       </select>
-                      <div className="invalid-feedback">
-                        Please select a valid TAM.
-                      </div>
                     </div>
                     <div className="col-md-6 my-1">
                       <label
@@ -225,9 +210,6 @@ const ProjectForm = () => {
                         value={estimatedhrs}
                         onChange={(e) => setEstimatedhrs(e.target.value)}
                       />
-                      <div className="invalid-feedback">
-                        Estimated hours required.
-                      </div>
                     </div>
                     <div className="col-md-6 my-1">
                       <label
@@ -245,9 +227,6 @@ const ProjectForm = () => {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                       />
-                      <div className="invalid-feedback">
-                        Description required.
-                      </div>
                     </div>
                   </div>
                   <hr className="my-4" />
@@ -260,7 +239,6 @@ const ProjectForm = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

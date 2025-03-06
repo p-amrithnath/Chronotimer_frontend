@@ -27,10 +27,6 @@ const axiosInstance = axios.create({
             alert("Session expired! Redirecting to login...");
             window.location.href = "/";
           } 
-          
-          // else if (error.response.status === 500) {
-          //   alert("Server error! Please try again later.");
-          // }
         }
         return Promise.reject(error);
       }

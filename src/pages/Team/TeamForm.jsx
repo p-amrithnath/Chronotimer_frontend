@@ -101,13 +101,16 @@ const TeamForm = () => {
           "http://localhost:1238/auth/new",
           formData
         );
+        if(response.data === 'Already Existing User is updated.')
+        {
+          toast.error("The user already exists!!!");
+          return
+        }
         toast.success("Added successfully!");
       }
 
       console.log("Data saved successfully:", response.data);
-      setTimeout(() => {
-        navigate("/team");
-      }, 2000); // Adjust the timeout as needed
+      navigate("/team");
     } catch (error) {
       console.error("There was an error saving the data!", error);
       toast.error("Failed to save data!");
@@ -335,7 +338,7 @@ const TeamForm = () => {
                   </div>
 
                   <hr className="my-4" />
-                  <button className="btn btn-primary btn-lg" type="submit">
+                  <button className="w-100 btn btn-primary" type="submit">
                     {isEditMode ? "Update" : "Submit"}
                   </button>
                 </form>
@@ -344,8 +347,6 @@ const TeamForm = () => {
           </div>
         </div>
       </div>
-
-      <Footer />
     </>
   );
 };

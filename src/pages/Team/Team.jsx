@@ -22,20 +22,22 @@ const Team = () => {
     fetchData();
   }, []);
 
-
   const deleteEmp = async (id) => {
     try {
-      await axios.delete(`http://localhost:1238/auth/${id}`);
-      setData(data.filter((emp) => emp.id !== id));
+      const confirm = window.confirm("Are you sure you want to delete ?");
+      if (confirm) {
+        await axios.delete(`http://localhost:1238/auth/${id}`);
+        setData(data.filter((emp) => emp.id !== id));
+      }
     } catch (error) {
       console.error("There was an error deleting the data!", error);
     }
   };
 
   const handleEdit = (emp) => {
-    navigate('/team/edit', { state: { emp } });
+    navigate("/team/edit", { state: { emp } });
   };
-  
+
   const TeamTable = () => {
     return (
       <>
@@ -53,9 +55,9 @@ const Team = () => {
             <table className="table table-striped">
               <thead>
                 <tr>
-                  <th>EmpId</th>
-                  <th>EmpName</th>
-                  <th>EmpType</th>
+                  <th>ID</th>
+                  <th>Employee Name</th>
+                  <th>Role</th>
                   <th>Department</th>
                   <th className="center-align">Action</th>
                 </tr>
@@ -66,7 +68,7 @@ const Team = () => {
                     <tr key={emp.id}>
                       <td>{emp.id}</td>
                       <td>{emp.name}</td>
-                      <td>{emp.empType}</td>
+                      <td>{emp.roles}</td>
                       <td>{emp.departmentName}</td>
                       <td ml={1} className="center-align">
                         <i
@@ -103,7 +105,7 @@ const Team = () => {
       <div className="full-height-container">
         <div className="container my-1 py-1 content">
           <h3>Team</h3>
-             <TeamTable /> 
+          <TeamTable />
         </div>
       </div>
     </>

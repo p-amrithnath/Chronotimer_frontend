@@ -83,6 +83,7 @@ const Calendar = ({ onDateClick, employeeId }) => {
 
   return (
     <>
+
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]} // Add interactionPlugin to plugins array
         initialView="dayGridMonth"

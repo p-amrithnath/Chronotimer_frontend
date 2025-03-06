@@ -36,14 +36,13 @@ const getAllEmployees = async () => {
   }
 };
 
-
-  
+;
 
 
 
 export default {
   login,
   getEmployeeById,
-  getAllEmployees
-  
+  getAllEmployees,
+
 };

@@ -67,12 +67,15 @@ const Timesheets = () => {
 
   const deleteEmp = async (id) => {
     try {
+      const confirm = window.confirm("Are you sure you want to delete ?");
+      if(confirm){
       await TimeentryService.deleteTimeEntry(id);
       setData((prevData) => ({
         ...prevData,
         timeentries: prevData.timeentries.filter((entry) => entry.id !== id),
       }));
       setRefresh(!refresh);
+    }
     } catch (error) {
       console.error("Error deleting time entry:", error);
       toast.error("Error deleting time entry!");
@@ -107,6 +110,7 @@ const Timesheets = () => {
           message: message,
           createdAt: new Date().toISOString(),
           createdBy: localStorage.getItem("userId"),
+          employeeId: employeeId,
         };
         console.log("Request for approve/reject:", request);
         await TimeentryService.approveReject(request);
@@ -117,6 +121,7 @@ const Timesheets = () => {
       } catch (error) {
         console.error(`Error ${status} time entries:`, error);
         toast.error(`Failed to ${status} time entries.`);
+        // setRefresh(!refresh);
       }
     }
   };
@@ -151,12 +156,6 @@ const Timesheets = () => {
           entry.id,
           entry
         );
-        setData((prevData) => ({
-          ...prevData,
-          timeentries: prevData.timeentries.map((e) =>
-            e.id === entry.id ? updatedEntry : e
-          ),
-        }));
       } else {
         // Add new entry
         entry.employeeId = employeeId;
@@ -164,10 +163,6 @@ const Timesheets = () => {
 
         console.log("New entry:", entry);
         const newEntry = await TimeentryService.createTimesheet(entry);
-        // setData((prevData) => ({
-        //   ...prevData,
-        //   timeentries: [...prevData.timeentries, newEntry],
-        // }));
       }
       setRefresh(!refresh); // Toggle the refresh state to re-trigger useEffect
       handleCloseTimeEntry();

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Footer, Navbar } from "../../components";
+import {Navbar } from "../../components";
 import Calendar from "../../components/Calender"; 
 import { useNavigate, useLocation } from "react-router-dom";
 import SecurityService from "../../services/SecurityService";
