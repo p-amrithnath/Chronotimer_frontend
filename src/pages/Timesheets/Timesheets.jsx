@@ -35,7 +35,6 @@ const Timesheets = () => {
     if (employeeId && date) {
       fetchTimesheetData(employeeId, date);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [employeeId, date, refresh]);
 
   const fetchTimesheetData = async (employeeId, date) => {
@@ -45,8 +44,6 @@ const Timesheets = () => {
         date
       );
       console.log("Fetched data:", response);
-
-      // Ensure response has expected structure
       setData({
         timeentries: response.timeentries || [],
         remarks: response.remarks || [],
