@@ -37,13 +37,42 @@ const getAllEmployees = async () => {
 };
 
 
-  
+const addEmployee = async (formData) => {
+  try {
+    const response = await axiosInstance.post("/auth/new", formData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateEmployee = async (id, formData) => {
+  try {
+    const response = await axiosInstance.patch(`/auth/${id}`, formData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+
+const deleteEmployee = async (id) => {
+  try {
+    await axiosInstance.delete(`/auth/${id}`);
+  } catch (error) {
+    throw error;
+  }
+};
 
 
 
 export default {
   login,
   getEmployeeById,
-  getAllEmployees
-  
+  getAllEmployees,
+  addEmployee,
+  updateEmployee,
+  deleteEmployee 
+
 };

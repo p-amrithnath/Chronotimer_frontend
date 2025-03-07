@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginService from '../../services/SecurityService';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!username || !password) {
+      toast.error("All fields are mandatory!");
+      return;
+    }
     try {
       const response = await LoginService.login(username, password);
       console.log('Login successful:', response);
       localStorage.setItem('jwtToken', response.token);
       localStorage.setItem('userId', response.userId);
       const employee = await LoginService.getEmployeeById(response.userId);
-      console.log('Employee :',employee);
       localStorage.setItem('name',employee.name);
       localStorage.setItem('role',employee.roles);
       navigate('/home', { state: { employee } });
+      toast.success("Login successful!!");
     } catch (error) {
       console.error('There was an error logging in!', error);
+      toast.error("Check the credentials!!")
     }
   };
 
@@ -40,7 +50,7 @@ const Login = () => {
                 type="text"
                 className="form-control"
                 id="floatingInput"
-                placeholder="name@example.com"
+                placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />

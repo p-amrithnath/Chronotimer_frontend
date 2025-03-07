@@ -1,8 +1,6 @@
 export { default as Home } from './Home/Home';
 export { default as Team } from './Team/Team';
-export { default as ContactPage } from './Other/ContactPage';
 export { default as Login } from './Login/Login';
-export { default as Register } from './Other/Register';
 export { default as PageNotFound } from './Other/PageNotFound';
 export { default as Project } from './Projects/Project';
 export { default as Timesheets } from './Timesheets/Timesheets';

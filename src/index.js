@@ -4,8 +4,7 @@ import "../node_modules/font-awesome/css/font-awesome.min.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import { Provider } from "react-redux";
-// import store from "./redux/store";
+
 
 import {
   Home,
@@ -28,13 +27,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <ScrollToTop>
-      {/* <Provider store={store}> */}
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/team" element={<Team />} />
-          <Route path="/contact" element={<ContactPage />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/register" element={<Register />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="/product/*" element={<PageNotFound />} />
           <Route path="/project" element={<Project />} />
@@ -44,7 +40,6 @@ root.render(
           <Route path="/calender" element={<CalenderView />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
-      {/* </Provider> */}
     </ScrollToTop>
     <Toaster />
   </BrowserRouter>

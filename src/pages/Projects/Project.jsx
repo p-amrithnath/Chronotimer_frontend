@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Footer, Navbar } from "../../components";
+import {Navbar } from "../../components";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Project.css";
 import projectService from "../../services/ProjectService"; // Corrected import
+import { format} from 'date-fns';
 
 const ProjectPage = () => {
   const [data, setData] = useState([]);
@@ -27,19 +28,14 @@ const ProjectPage = () => {
 
   const deleteProject = async (projectId) => {
     try {
+      const confirm = window.confirm("Are you sure you want to delete ?");
+      if(confirm){
       await projectService.deleteProject(projectId);
       setData(data.filter((project) => project.id !== projectId));
+      }
     } catch (error) {
       console.error(`Error deleting project with ID ${projectId}:`, error);
     }
-  };
-
-  const EmptyCart = () => {
-    return (
-      <div className="container table-container">
-        <p className="text-center">No data available</p>
-      </div>
-    );
   };
 
   const ProjectList = () => {
@@ -73,7 +69,7 @@ const ProjectPage = () => {
                     <td>{project.id}</td>
                     <td>{project.projName}</td>
                     <td>{project.type}</td>
-                    <td>{project.startDate}</td>
+                    <td>{format(project.startDate, 'dd-MM-yyyy')}</td>
                     <td>{project.estimatedhrs}</td>
                     <td className="center-align">
                       <i
